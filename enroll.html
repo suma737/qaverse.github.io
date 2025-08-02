@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QAverse Enrollment</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <style>
+        body{display:flex;align-items:center;justify-content:center;min-height:100vh;background:var(--light);} 
+        .enroll-box{background:#fff;padding:2rem;border-radius:8px;max-width:480px;width:100%;box-shadow:0 4px 12px rgba(0,0,0,.1);} 
+        .enroll-box h1{margin-bottom:1rem;text-align:center;} 
+        .enroll-box label{display:block;margin:.75rem 0 .25rem;font-weight:600;} 
+        .enroll-box input{width:100%;padding:.5rem .75rem;border:1px solid #ccc;border-radius:4px;} 
+        .pay-btn{margin-top:1.25rem;width:100%;}
+    </style>
+</head>
+<body>
+    <div class="enroll-box">
+        <h1>Workshop Enrollment</h1>
+        <form id="enroll-form" action="https://docs.google.com/forms/d/e/1FAIpQLSd7KCzWnSkW2JtjYDVBXw4LQuM5o-sm-2h5rFGpZ-oaBGs6cQ/formResponse" method="POST" target="_self">
+            <label>First Name</label>
+            <input type="text" name="entry.281323838" required>
+            <label>Last Name</label>
+            <input type="text" name="entry.327843473" required>
+            <label>Company</label>
+            <input type="text" name="entry.1648449055" required>
+            <label>Title</label>
+            <input type="text" name="entry.1014414588" required>
+            <label>Email</label>
+            <input type="email" name="entry.1499482551" required>
+            <input type="hidden" name="entry.46450006" value="yes" id="paid-field">
+            </form>
+
+            <button id="pay-btn" class="btn pay-btn">Continue to Payment</button>
+        </form>
+        
+    </div>
+
+<script>
+const STRIPE_PAYMENT_LINK="https://buy.stripe.com/test_4gM8wP6vzeYc2sQekkcAo01?prefilled_email="; // replace with real Stripe payment link; success URL must redirect back to enroll.html?paid=1
+
+function serializeForm(){const data={};document.querySelectorAll('#enroll-form input').forEach(inp=>data[inp.name]=inp.value);return data;}
+function saveData(data){localStorage.setItem('enrollData',JSON.stringify(data));}
+function loadData(){try{return JSON.parse(localStorage.getItem('enrollData')||'{}');}catch{ return {};}}
+// Payment button handler
+const payBtn=document.getElementById('pay-btn');
+const userForm=document.getElementById('enroll-form');
+
+payBtn.addEventListener('click',()=>{
+  if(!userForm.reportValidity()) return; // HTML5 validation
+  const formData=serializeForm();
+  saveData(formData);
+  // optionally prefill email in Stripe link
+  const payUrl=STRIPE_PAYMENT_LINK+encodeURIComponent(formData['entry.1499482551']||'');
+  window.location.href=payUrl;
+});
+
+// On return from payment success
+const params=new URLSearchParams(window.location.search);
+if(params.get('paid')==='1'){
+   const data=loadData();
+   if(Object.keys(data).length){
+       const form=document.getElementById('enroll-form');
+       // populate form
+       for(const [k,v] of Object.entries(data)){
+           let inp=form.querySelector(`[name="${k}"]`);
+           if(!inp){ inp=document.createElement('input'); inp.type='hidden'; inp.name=k; form.appendChild(inp);} inp.value=v;
+       }
+       // ensure paid flag yes already set
+       document.getElementById('paid-field').value='yes';
+       form.style.display='none';
+       form.submit();
+       localStorage.removeItem('enrollData');
+       alert('Enrollment recorded!');
+   }
+}
+</script>
+
+</script>
+</body>
+</html>
