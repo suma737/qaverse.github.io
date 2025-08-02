@@ -4,7 +4,11 @@
 body{color:#333;line-height:1.6;background:#fff;}
 a{text-decoration:none;color:var(--primary);}a:hover{opacity:.8;}
 header{background:#fff;position:sticky;top:0;z-index:10;border-bottom:1px solid #e5e5e5;} .container{max-width:1080px;margin:0 auto;padding:0 1rem;}
-.navbar{display:flex;align-items:center;justify-content:space-between;padding:1rem 0;}
+.navbar{display:flex;justify-content:space-between;align-items:center;position:relative;}
+.hamburger{display:none;flex-direction:column;gap:4px;background:none;border:none;cursor:pointer;}
+.hamburger span{width:24px;height:2px;background:var(--dark);} 
+@media(max-width:768px){nav{position:absolute;top:100%;right:0;background:#fff;border:1px solid #ddd;border-radius:4px;padding:1rem;display:none;}
+nav.open{display:block;} .hamburger{display:flex;} nav ul{flex-direction:column;gap:.75rem;}}
 .logo{font-weight:700;font-size:2rem;}nav ul{display:flex;list-style:none;gap:2rem;}
 .logo .qa{color:var(--primary);} .logo .verse{color:var(--dark);}nav li a{color:var(--dark);font-weight:500;}
 .hero{padding:2.5rem 0;text-align:center;} .hero h1{font-size:2.75rem;margin-bottom:1rem;} .hero p{font-size:1.1rem;margin-bottom:2rem;max-width:680px;margin-inline:auto;}

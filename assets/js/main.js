@@ -1,5 +1,11 @@
 // simple FAQ accordion
 document.addEventListener('DOMContentLoaded',()=>{
+ const toggle=document.getElementById('nav-toggle');
+ const nav=document.querySelector('header nav');
+ if(toggle){toggle.addEventListener('click',()=>nav.classList.toggle('open'));
+  nav.querySelectorAll('a').forEach(link=>link.addEventListener('click',()=>nav.classList.remove('open')));
+}
+
   document.querySelectorAll('.faq-item').forEach(item=>{
     const q=item.querySelector('.faq-question');
     q.addEventListener('click',()=>{
